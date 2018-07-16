@@ -17,3 +17,8 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    jwt_private_key_path: %kernel.root_dir%/../app/config/jwt/private.pem   # ssh private key path
+    jwt_public_key_path:  %kernel.root_dir%/../app/config/jwt/public.pem    # ssh public key path
+    jwt_key_pass_phrase:  3Hd9gus4zFRyBw7S                                  # ssh key pass phrase
+    jwt_token_ttl:        3600
