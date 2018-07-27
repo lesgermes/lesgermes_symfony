@@ -99,7 +99,7 @@ class DefaultController extends Controller
         $userManager->updateUser($user);
         return View::create()
             ->setStatusCode(200)
-            ->setData(array("user"=>$user));
+            ->setData($user);
     }
 
 }

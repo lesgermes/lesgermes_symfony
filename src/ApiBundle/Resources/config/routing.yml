@@ -1,3 +1,10 @@
-api_register:
-    path:     /register
-    defaults: { _controller: ApiBundle:Default:register }
+api_default:
+    type: rest
+    resource: ApiBundle\Controller\DefaultController
+    prefix: /
+
+api_user:
+    type: rest
+    resource: ApiBundle\Controller\UserController
+    prefix: /user
+

@@ -105,3 +105,11 @@ gesdinet_jwt_refresh_token:
     # ttl_update: false
     # firewall: api
     user_provider: user_provider_service_id
+
+nelmio_cors:
+    paths:
+        '^/':
+            allow_origin: ['*']
+            allow_headers: ['*']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS']
+            max_age: 3600
