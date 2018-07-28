@@ -16,42 +16,47 @@ security:
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
+            host: ^%base_host_reg%$
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         
         register:
-            pattern: ^/api/register
+            host: ^api\.%base_host_reg%$
+            pattern: ^/register
             stateless: true
             anonymous: true
 
         login:
-            pattern:  ^/api/login
+            host: ^api\.%base_host_reg%$
+            pattern:  ^/login
             stateless: true
             anonymous: true
             json_login:
-                check_path:               /api/login_check
+                check_path:               /login_check
                 success_handler:          lexik_jwt_authentication.handler.authentication_success
                 failure_handler:          lexik_jwt_authentication.handler.authentication_failure
 
         refresh:
-            pattern:  ^/api/token/refresh
+            host: ^api\.%base_host_reg%$
+            pattern:  ^/token/refresh
             stateless: true
             anonymous: true
 
         api:
-            pattern:   ^/api
+            host: ^api\.%base_host_reg%$
+            pattern:   ^/
             stateless: true
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
 
         main:
-            pattern: ^/
+            host: ^%base_host_reg%$
             anonymous: true
 
     access_control:
-        - { path: ^/,                   roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/register,       roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/login,          roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/token/refresh,  roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,                roles: IS_AUTHENTICATED_FULLY }
+        - { host: ^%base_host_reg%$,                                roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: ^api\.%base_host_reg%$, path: ^/register,         roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: ^api\.%base_host_reg%$, path: ^/login,            roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: ^api\.%base_host_reg%$, path: ^/token/refresh,    roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { host: ^api\.%base_host_reg%$, path: ^/,                 roles: IS_AUTHENTICATED_FULLY }

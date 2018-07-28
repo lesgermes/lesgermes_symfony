@@ -22,3 +22,6 @@ parameters:
     jwt_public_key_path:  %kernel.root_dir%/../app/config/jwt/public.pem    # ssh public key path
     jwt_key_pass_phrase:  3Hd9gus4zFRyBw7S                                  # ssh key pass phrase
     jwt_token_ttl:        3600
+
+    base_host: lesgermes.local
+    base_host_reg: lesgermes\.local
