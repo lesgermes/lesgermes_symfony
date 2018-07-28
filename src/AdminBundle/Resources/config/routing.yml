@@ -1,0 +1,19 @@
+admin_homepage:
+    path:     /
+    defaults: { _controller: AdminBundle:Default:index }
+
+admin_login:
+    path:     /login
+    defaults: { _controller: AdminBundle:Account:login }
+
+admin_logout:
+    path:     /logout
+    defaults: { _controller: AdminBundle:Account:logout }
+
+admin_users:
+    path:     /utilisateurs
+    defaults: { _controller: AdminBundle:Default:users }
+
+admin_editUsersRolesModal:
+    path:     /editUsersRolesModal/{userId}
+    defaults: { _controller: AdminBundle:Default:editUsersRolesModal, userId: null }

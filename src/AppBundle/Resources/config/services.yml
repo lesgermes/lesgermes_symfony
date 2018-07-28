@@ -1,0 +1,8 @@
+services:
+    app_services.roles:
+        class: AppBundle\Service\Roles
+        arguments: ['@security.role_hierarchy']
+
+    engine_services.accounts:
+        class: AppBundle\Service\Accounts
+        arguments: ['@fos_user.user_manager', '@security.encoder_factory', '@doctrine.orm.entity_manager', '@app_services.roles']

@@ -1,0 +1,40 @@
+img.accout_type_logo {
+    height: 13px;
+}
+
+.deleteRoleButton {
+    float: right;
+}
+
+.actionButtons {
+    text-align: right;
+}
+
+.actionButton {
+    float: right;
+}
+
+.actionButtons a, .actionButton {
+    color: #C5C7CB;
+    padding: 0 4px;
+}
+
+.bankLogo {
+    max-height: 17px;
+}
+
+#survey-form .questions > .form-group > label,
+#survey-form .questions > .form-group .answers > .form-group > label {
+    display: none;
+}
+
+#survey-form .questions > .form-group > .jumbotron {
+    padding: 30px;
+    border-radius: 6px;
+}
+
+#survey-form .questions > .form-group .answers > .form-group {
+    background-color: #ddd;
+    border-radius: 6px;
+    padding: 10px;
+}
