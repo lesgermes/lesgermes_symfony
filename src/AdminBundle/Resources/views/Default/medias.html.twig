@@ -1,0 +1,111 @@
+{% extends "AdminBundle:Layouts:master.html.twig" %}
+
+{% set title = 'Medias' %}
+
+{% block head %}
+    <!-- iCheck -->
+    <link href="{{ asset('node_modules/icheck/skins/flat/green.css') }}" rel="stylesheet">
+    {% include 'AdminBundle:Plugins:data_tables.css.html.twig' %}
+
+{% endblock %}
+
+{% block panel_toolbox %}
+    <li><a id="add_media"><i class="fa fa-plus"></i></a>
+{% endblock %}
+
+{% block body %}
+    <div id="mediasTableContainer">
+        {{ include('AdminBundle:Default:mediasTable.html.twig', { 'medias': medias }) }}
+    </div>
+{% endblock %}
+
+{% block modals %}
+    <div id="modals"></div>
+{% endblock %}
+
+{% block scripts %}
+    <!-- iCheck -->
+    <script src="{{ asset('node_modules/icheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('node_modules/bootstrap-validator/dist/validator.min.js') }}"></script>
+    {% include 'AdminBundle:Plugins:data_tables.js.html.twig' %}
+
+    <script>
+        $("#datatable").DataTable();
+
+        $(document).on("submit", "#media-form", function(e){
+            e.preventDefault();
+            return  false;
+        });
+
+        function openEditMediaModal(event, mediaId) {
+            event.preventDefault();
+            $.get("{{ path('admin_editMediaModal') }}/"+mediaId, createEditMediaModal)
+        }
+
+        $('#add_media').click(function(e) {
+            $.get("{{ path('admin_editMediaModal', { mediaId : 'new' }) }}", createEditMediaModal)
+        });
+
+        $(document).on("click", "#media_form_save", function(e){
+            e.preventDefault();
+
+            // get the properties and values from the form
+            form = $("#media-form");
+
+            if(!form.data('bs.validator').validate().hasErrors()) {
+                data = objectifyForm(form.serializeArray());
+
+                disableModalInputs(true);
+                $.post(form.attr('action'), data, function(data) {
+                    data = JSON.parse(data);
+                    if (data.success) {
+                        showSuccess("Media enregistrée");
+                        updateTable();
+                        $("#editMediaModal").modal('hide');
+                    }
+                    else if (data.error) {
+                        showError(data.message);
+                    }
+                    else {
+                        showError("Une erreur est survenue, veuillez réessayer.");
+                    }
+                    disableModalInputs(false);
+                })
+            }
+        });
+
+        function createEditMediaModal(data) {
+            try
+            {
+                var dataJson = JSON.parse(data);
+                if (dataJson.error)
+                    showError(dataJson.message);
+            }
+            catch(e)
+            {
+                $('#modals').html(data);
+                $("#editMediaModal").modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                $("#media-form").validator();
+            }
+        }
+
+        function updateTable() {
+            $.get("{{ path('admin_getMediasTable') }}", function(data) {
+                try
+                {
+                    var dataJson = JSON.parse(data);
+                    if (dataJson.error)
+                        showError(dataJson.message);
+                }
+                catch(e)
+                {
+                    $('#mediasTableContainer').html(data);
+                    $("#datatable").DataTable();
+                }
+            })
+        }
+    </script>
+{% endblock %}

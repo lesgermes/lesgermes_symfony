@@ -29,3 +29,15 @@ admin_getMediaTypesTable:
 admin_editMediaTypeModal:
     path:     /editMediaTypeModal/{mediaTypeId}
     defaults: { _controller: AdminBundle:Media:editMediaTypeModal, mediaTypeId: null }
+
+admin_medias:
+    path:     /medias
+    defaults: { _controller: AdminBundle:Media:getMediasList }
+
+admin_getMediasTable:
+    path:     /mediasTable
+    defaults: { _controller: AdminBundle:Media:getMediasTable }
+
+admin_editMediaModal:
+    path:     /editMediaModal/{mediaId}
+    defaults: { _controller: AdminBundle:Media:editMediaModal, mediaId: null }

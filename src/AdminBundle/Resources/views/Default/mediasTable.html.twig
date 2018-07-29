@@ -1,0 +1,26 @@
+<table id="datatable" class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Url</th>
+        <th>Type</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for media in medias %}
+        <tr data-mediaId="{{ media.id }}">
+            <!-- Name -->
+            <td>{{ media.name }}</td>
+            <!-- Bank -->
+            <td>{{ media.url }}</td>
+            <!-- Phone -->
+            <td>{{ media.type.name }}</td>
+            <!-- Actions -->
+            <td class="actionButtons">
+                <a href="#" role="button" onclick="openEditMediaModal(event, {{ media.id }})"><i class="fa fa-wrench"></i></a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -59,29 +59,6 @@ class Media
     }
 
     /**
-     * @var array
-     *
-     * @ORM\Column(name="groups", type="array", nullable=true)
-     */
-    private $groups;
-
-    /**
-     * @return array
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
-
-    /**
-     * @param array $groups
-     */
-    public function setGroups($groups)
-    {
-        $this->groups = $groups;
-    }
-
-    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
