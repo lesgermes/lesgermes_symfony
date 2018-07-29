@@ -2,7 +2,6 @@
     <thead>
     <tr>
         <th>Name</th>
-        <th>Medias Count</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -11,8 +10,6 @@
         <tr data-groupId="{{ group.id }}">
             <!-- Name -->
             <td>{{ group.name }}</td>
-            <!-- Medias Count -->
-            <td></td>
             <!-- Actions -->
             <td class="actionButtons">
                 <a href="#" role="button" onclick="openEditMediaGroupsMediasModal(event, {{ group.id }})"><i class="fa fa-link"></i></a>
