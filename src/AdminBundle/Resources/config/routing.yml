@@ -17,3 +17,15 @@ admin_users:
 admin_editUsersRolesModal:
     path:     /editUsersRolesModal/{userId}
     defaults: { _controller: AdminBundle:Default:editUsersRolesModal, userId: null }
+
+admin_mediaTypes:
+    path:     /mediaTypes
+    defaults: { _controller: AdminBundle:Media:getMediaTypesList }
+
+admin_getMediaTypesTable:
+    path:     /mediaTypesTable
+    defaults: { _controller: AdminBundle:Media:getMediaTypesTable }
+
+admin_editMediaTypeModal:
+    path:     /editMediaTypeModal/{mediaTypeId}
+    defaults: { _controller: AdminBundle:Media:editMediaTypeModal, mediaTypeId: null }

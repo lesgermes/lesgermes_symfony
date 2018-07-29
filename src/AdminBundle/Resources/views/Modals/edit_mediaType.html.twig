@@ -1,0 +1,28 @@
+<div id="editMediaTypeModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                {% if mediaTypeId == 'new' %}
+                    <h4 class="modal-title">Add Media Type</h4>
+                {% else %}
+                    <h4 class="modal-title">Edit Media Type</h4>
+                {% endif %}
+            </div>
+            <div class="modal-body">
+                <h4>Media Type Info</h4>
+
+                {{ form_start(form, {'action': path('admin_editMediaTypeModal', {'mediaTypeId': mediaTypeId})}) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
