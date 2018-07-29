@@ -3,6 +3,10 @@ services:
         class: AppBundle\Service\Roles
         arguments: ['@security.role_hierarchy']
 
-    engine_services.accounts:
+    app_services.accounts:
         class: AppBundle\Service\Accounts
         arguments: ['@fos_user.user_manager', '@security.encoder_factory', '@doctrine.orm.entity_manager', '@app_services.roles']
+    
+    app_services.media_groups:
+        class: AppBundle\Service\MediaGroups
+        arguments: ['@doctrine.orm.entity_manager']

@@ -1,0 +1,152 @@
+{% extends "AdminBundle:Layouts:master.html.twig" %}
+
+{% set title = 'Media Groups' %}
+
+{% block head %}
+    <!-- iCheck -->
+    <link href="{{ asset('node_modules/icheck/skins/flat/green.css') }}" rel="stylesheet">
+    {% include 'AdminBundle:Plugins:data_tables.css.html.twig' %}
+{% endblock %}
+
+{% block panel_toolbox %}
+<li><a id="add_mediaGroup"><i class="fa fa-plus"></i></a>
+    {% endblock %}
+
+    {% block body %}
+        <div id="mediaGroupsTableContainer">
+            {{ include('AdminBundle:Default:mediaGroupsTable.html.twig', { 'groups': groups }) }}
+        </div>
+    {% endblock %}
+
+    {% block modals %}
+        <div id="modals"></div>
+    {% endblock %}
+
+    {% block scripts %}
+    <!-- iCheck -->
+    <script src="{{ asset('node_modules/icheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('node_modules/bootstrap-validator/dist/validator.min.js') }}"></script>
+    {% include 'AdminBundle:Plugins:data_tables.js.html.twig' %}
+
+    <script>
+        $("#datatable").DataTable();
+
+        function openEditMediaGroupModal(event, groupId) {
+            event.preventDefault();
+            $.get("{{ path('admin_editMediaGroupModal') }}/"+groupId, createEditMediaGroupModal);
+        }
+
+        function openEditMediaGroupsMediasModal(event, groupId) {
+            event.preventDefault();
+            $.get("{{ path('admin_editMediaGroupsMediasModal') }}/"+groupId, createEditMediaGroupsMediasModal);
+        }
+
+        $('#add_mediaGroup').click(function(e) {
+            $.get("{{ path('admin_editMediaGroupModal', { groupId : 'new' }) }}", createEditMediaGroupModal);
+        });
+
+        $(document).on("submit", "#mediaGroup-form", function(e){
+            e.preventDefault();
+
+            // get the properties and values from the form
+            form = $("#mediaGroup-form");
+            if(!form.data('bs.validator').validate().hasErrors()) {
+                formData = new FormData(form[0]);
+
+                disableModalInputs(true);
+                $.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: formData,
+                    contentType: false, //this is requireded please see answers above
+                    processData: false, //this is requireded please see answers above
+                    error   : function(data) {showError("Une erreur est survenue, veuillez réessayer.");disableModalInputs(false);},
+                    success : function(data) {
+                        data = JSON.parse(data);
+                        if (data.success) {
+                            showSuccess("Media Group enregistrée");
+                            updateTable();
+                            $("#editMediaGroupModal").modal('hide');
+                        }
+                        else if (data.error) {
+                            showError(data.message);
+                        }
+                        else {
+                            showError("Une erreur est survenue, veuillez réessayer.");
+                        }
+                        disableModalInputs(false);
+                    }
+                });
+            }
+        });
+
+        function createEditMediaGroupModal(data) {
+            try
+            {
+                var dataJson = JSON.parse(data);
+                if (dataJson.error)
+                    showError(dataJson.message);
+            }
+            catch(e)
+            {
+                $('#modals').html(data);
+                $("#editMediaGroupModal").modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                $("#mediaGroup-form").validator();
+            }
+        }
+
+        function createEditMediaGroupsMediasModal(data) {
+            try
+            {
+                var dataJson = JSON.parse(data);
+                if (dataJson.error)
+                    showError(dataJson.message);
+            }
+            catch(e)
+            {
+                $('#modals').html(data);
+                $("#editMediaGroupsMediasModal").modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+            }
+        }
+
+        function buttonAddMediaGroupsMedias(button, groupId) {
+            var id = $($(button)[0].parentNode.parentNode).find('select').val();
+            editMediaGroupsMedias(groupId, 'add', id);
+        }
+
+        function editMediaGroupsMedias(groupId, action, id) {
+            $.get("{{ path('admin_doEditMediaGroupsMediasModal') }}/"+groupId+"/"+action+"/"+id, function(data) {
+                var dataJson = JSON.parse(data);
+                if (dataJson.error)
+                    showError(dataJson.message);
+                else if (dataJson.success) {
+                    showSuccess(dataJson.message);
+                    $("#editMediaGroupsMediasModal").modal("hide");
+                    $.get("{{ path('admin_editMediaGroupsMediasModal') }}/"+groupId, createEditMediaGroupsMediasModal);
+                }
+            })
+        }
+
+        function updateTable() {
+            $.get("{{ path('admin_getMediaGroupsTable') }}", function(data) {
+                try
+                {
+                    var dataJson = JSON.parse(data);
+                    if (dataJson.error)
+                        showError(dataJson.message);
+                }
+                catch(e)
+                {
+                    $('#mediaGroupsTableContainer').html(data);
+                    $("#datatable").DataTable();
+                }
+            })
+        }
+    </script>
+{% endblock %}

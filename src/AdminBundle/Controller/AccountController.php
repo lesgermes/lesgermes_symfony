@@ -17,7 +17,7 @@ class AccountController extends Controller
             return $this->redirect($this->generateUrl('admin_homepage'));
 
         if ($request->isMethod('POST') && !is_null($_POST['email']) && !is_null($_POST['password'])) {
-            $userArray = $this->get("engine_services.accounts")->login($_POST['email'], $_POST['password'], $this->requiredRole);
+            $userArray = $this->get("app_services.accounts")->login($_POST['email'], $_POST['password'], $this->requiredRole);
 
             if ($userArray['code'] == 200) {
                 $user = $userArray['user'];

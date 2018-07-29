@@ -1,0 +1,24 @@
+<table id="datatable" class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Medias Count</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for group in groups %}
+        <tr data-groupId="{{ group.id }}">
+            <!-- Name -->
+            <td>{{ group.name }}</td>
+            <!-- Medias Count -->
+            <td></td>
+            <!-- Actions -->
+            <td class="actionButtons">
+                <a href="#" role="button" onclick="openEditMediaGroupsMediasModal(event, {{ group.id }})"><i class="fa fa-link"></i></a>
+                <a href="#" role="button" onclick="openEditMediaGroupModal(event, {{ group.id }})"><i class="fa fa-wrench"></i></a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

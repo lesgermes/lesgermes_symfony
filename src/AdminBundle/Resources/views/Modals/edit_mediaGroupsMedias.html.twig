@@ -1,0 +1,33 @@
+<div id="editMediaGroupsMediasModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Media Group's Medias</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Media Group's Medias</h4>
+
+                <h5>Medias</h5>
+
+                {{ form_start(formMedias) }}
+                {{ form_widget(formMedias) }}
+                {{ form_end(formMedias) }}
+
+                {% for media in medias %}
+                    <div class="well well-sm">
+                        {{ media.media.name }}
+                        <button class="btn btn-danger btn-xs" style="float: right;" onclick="editMediaGroupsMedias({{ group.id }}, 'delete', {{ media.media.id }})">Delete</button>
+                    </div>
+                {% endfor %}
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

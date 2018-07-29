@@ -41,3 +41,23 @@ admin_getMediasTable:
 admin_editMediaModal:
     path:     /editMediaModal/{mediaId}
     defaults: { _controller: AdminBundle:Media:editMediaModal, mediaId: null }
+
+admin_mediaGroups:
+    path:     /mediaGroups
+    defaults: { _controller: AdminBundle:Media:getGroupsList }
+
+admin_getMediaGroupsTable:
+    path:     /mediaGroupsTable
+    defaults: { _controller: AdminBundle:Media:getGroupsTable }
+
+admin_editMediaGroupModal:
+    path:     /editMediaGroupModal/{groupId}
+    defaults: { _controller: AdminBundle:Media:editGroupModal, groupId: null }
+
+admin_editMediaGroupsMediasModal:
+    path:     /editMediaGroupsMediasModal/{groupId}
+    defaults: { _controller: AdminBundle:Media:editGroupMediasModal, groupId: null }
+
+admin_doEditMediaGroupsMediasModal:
+    path:     /doEditMediaGroupsMediasModal/{groupId}/{action}/{id}
+    defaults: { _controller: AdminBundle:Media:doEditGroupMediasModal, groupId: null, action: null, id: null }
