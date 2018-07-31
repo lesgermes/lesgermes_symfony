@@ -8,3 +8,7 @@ api_user:
     resource: ApiBundle\Controller\UserController
     prefix: /user
 
+api_media:
+    type: rest
+    resource: ApiBundle\Controller\MediaController
+    prefix: /media

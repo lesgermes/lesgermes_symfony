@@ -54,5 +54,14 @@ class MediaGroup
     {
         $this->name = $name;
     }
+
+    private $medias;
+    public function getMedias() {
+        return $this->medias;
+    }
+    public function setMedias($medias) {
+        $this->medias = $medias;
+    }
+    
 }
 
