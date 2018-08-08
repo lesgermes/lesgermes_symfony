@@ -20,6 +20,7 @@
                     <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Content</th>
                         <th>Previous Amount</th>
                         <th>Amount</th>
                         <th>New Amount</th>
@@ -29,7 +30,9 @@
                     {% for transaction in transactions %}
                         <tr>
                             <!-- Date -->
-                            <td>{{ transaction.date | date('d-M-Y') }}</td>
+                            <td>{{ transaction.date | date('d-M-Y H:i:s') }}</td>
+                            <!-- Content -->
+                            <td>{{ transaction.content }}</td>
                             <!-- Previous Amount -->
                             <td>{{ transaction.previousAmount }}</td>
                             <!-- Amount -->
