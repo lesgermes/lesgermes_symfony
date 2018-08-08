@@ -14,9 +14,21 @@ admin_users:
     path:     /utilisateurs
     defaults: { _controller: AdminBundle:Default:users }
 
+admin_usersTable:
+    path:     /utilisateursTable
+    defaults: { _controller: AdminBundle:Default:usersTable }
+
 admin_editUsersRolesModal:
     path:     /editUsersRolesModal/{userId}
     defaults: { _controller: AdminBundle:Default:editUsersRolesModal, userId: null }
+
+admin_userTransactionsHistoryModal:
+    path:     /userTransactionsHistoryModal/{userId}
+    defaults: { _controller: AdminBundle:Default:userTransactionsHistoryModal, userId: null }
+
+admin_addUserFundsModal:
+    path:     /addUserFundsModal/{userId}
+    defaults: { _controller: AdminBundle:Default:addUserFundsModal, userId: null }
 
 admin_mediaTypes:
     path:     /mediaTypes

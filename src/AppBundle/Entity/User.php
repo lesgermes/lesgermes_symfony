@@ -78,5 +78,28 @@ class User extends BaseUser
     {
         $this->lastName = $lastName;
     }
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="coins", type="integer")
+     */
+    protected $coins;
+
+    /**
+     * @return integer
+     */
+    public function getCoins()
+    {
+        return $this->coins;
+    }
+
+    /**
+     * @param integer $coins
+     */
+    public function setCoins($coins)
+    {
+        $this->coins = $coins;
+    }
 }
 

@@ -10,49 +10,9 @@
 {% endblock %}
 
 {% block body %}
-    <table id="datatable" class="table table-striped table-bordered">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Enabled</th>
-            <th>Roles</th>
-            <th>Last Login</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr data-userId="{{ user.id }}">
-                <!-- Name -->
-                <td>{{ user.firstName }} {{ user.lastName }}</td>
-                <!-- Username -->
-                <td>{{ user.username }}</td>
-                <!-- Email -->
-                <td>{{ user.email }}</td>
-                <!-- Enabled -->
-                {% if user.enabled %}
-                <td><i class="fa fa-check"></i></td>
-                {% else %}
-                <td><i class="fa fa-times"></i></td>
-                {% endif %}
-                <!-- Roles -->
-                <td class="td-roles">
-                {% for role in user.roles %}
-                {{ role }}
-                {% endfor %}
-                <a href="#" role="button" class="editButton" onclick="openEditUserRightsModal(event, {{ user.id }})"><i class="fa fa-wrench"></i></a>
-                </td>
-                <!-- Last Login -->
-                {% if user.lastLogin is not null %}
-                <td>{{ user.lastLogin|date('d-M-Y') }}</td>
-                {% else %}
-                <td></td>
-                {% endif %}
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div id="mediasTableContainer">
+        {{ include('AdminBundle:Default:usersTable.html.twig', { 'users': users }) }}
+    </div>
 {% endblock %}
 
 {% block modals %}
@@ -62,6 +22,7 @@
 {% block scripts %}
     <!-- iCheck -->
     <script src="{{ asset('node_modules/icheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('node_modules/bootstrap-validator/dist/validator.min.js') }}"></script>
     {% include 'AdminBundle:Plugins:data_tables.js.html.twig' %}
 
     <script>
@@ -78,6 +39,38 @@
                         backdrop: 'static',
                         keyboard: false
                     });
+                }
+            })
+        }
+
+        function openUserTransactionsHistoryModal(event, userId) {
+            event.preventDefault();
+            $.get("{{ path('admin_userTransactionsHistoryModal') }}/" + userId, function(data) {
+                if (data.error) {
+                    showError(data.message);
+                } else {
+                    $('#modals').html(data);
+                    $("#datatable1").DataTable();
+                    $("#userTransactionsHistoryModal").modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                }
+            })
+        }
+
+        function openAddUserFundsModal(event, userId) {
+            event.preventDefault();
+            $.get("{{ path('admin_addUserFundsModal') }}/" + userId, function(data) {
+                if (data.error) {
+                    showError(data.message);
+                } else {
+                    $('#modals').html(data);
+                    $("#addUserFundsModal").modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    $("#user_add_funds-form").validator();
                 }
             })
         }
@@ -118,6 +111,50 @@
                     showError("Une erreur est survenue, veuillez réessayer.")
                 }
                 disableModalInputs(false);
+            })
+        }
+
+        $(document).on("click", "#user_add_funds_save", function(e){
+            e.preventDefault();
+
+            // get the properties and values from the form
+            form = $("#user_add_funds-form");
+
+            if(!form.data('bs.validator').validate().hasErrors()) {
+                data = objectifyForm(form.serializeArray());
+
+                disableModalInputs(true);
+                $.post(form.attr('action'), data, function(data) {
+                    data = JSON.parse(data);
+                    if (data.success) {
+                        showSuccess("Funds added");
+                        updateTable();
+                        $("#addUserFundsModal").modal('hide');
+                    }
+                    else if (data.error) {
+                        showError(data.message);
+                    }
+                    else {
+                        showError("Une erreur est survenue, veuillez réessayer.");
+                    }
+                    disableModalInputs(false);
+                })
+            }
+        })
+
+        function updateTable() {
+            $.get("{{ path('admin_usersTable') }}", function(data) {
+                try
+                {
+                    var dataJson = JSON.parse(data);
+                    if (dataJson.error)
+                        showError(dataJson.message);
+                }
+                catch(e)
+                {
+                    $('#mediasTableContainer').html(data);
+                    $("#datatable").DataTable();
+                }
             })
         }
     </script>

@@ -10,3 +10,7 @@ services:
     app_services.media_groups:
         class: AppBundle\Service\MediaGroups
         arguments: ['@doctrine.orm.entity_manager']
+    
+    app_services.users:
+        class: AppBundle\Service\Users
+        arguments: ['@doctrine.orm.entity_manager']

@@ -38,6 +38,22 @@ class DefaultController extends Controller
         ));
     }
 
+    public function usersTableAction(Request $request) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        $users = $this
+            ->get('fos_user.user_manager')
+            ->findUsers();
+
+        return $this->render('AdminBundle:Default:usersTable.html.twig', array(
+            'users' => $users
+        ));
+    }
+
     public function editUsersRolesModalAction(Request $request, $userId) {
         $session = $request->getSession();
 
@@ -49,7 +65,7 @@ class DefaultController extends Controller
             return new Response(json_encode(array("error"=>true,"message"=>"error userId")));
         }
 
-        $user = $users = $this
+        $user = $this
             ->get('fos_user.user_manager')
             ->findUserBy(array('id'=>$userId));
 
@@ -91,6 +107,69 @@ class DefaultController extends Controller
         }
         else {
             return new Response(json_encode(array("error"=>true,"message"=>"error HTTP METHOD")));
+        }
+    }
+
+    public function userTransactionsHistoryModalAction(Request $request, $userId) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        if (!isset($userId)) {
+            return new Response(json_encode(array("error"=>true,"message"=>"error userId")));
+        }
+
+        $user = $this
+            ->get('fos_user.user_manager')
+            ->findUserBy(array('id'=>$userId));
+
+        if (!$user) {
+            return new Response(json_encode(array("error"=>true,"message"=>"error User not found")));
+        }
+
+        $transactions = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:Transaction')
+            ->findBy(
+                array("user" => $user),
+                array('date' => 'ASC')//order
+            );
+        
+        return $this->render('AdminBundle:Modals:userTransactionsHistoryModal.html.twig', array(
+            'user' => $user,
+            'transactions' => $transactions
+        ));
+    }
+
+    public function addUserFundsModalAction(Request $request, $userId) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        if (!isset($userId)) {
+            return new Response(json_encode(array("error"=>true,"message"=>"error userId")));
+        }
+
+        $user = $this
+            ->get('fos_user.user_manager')
+            ->findUserBy(array('id'=>$userId));
+
+        if (!$user) {
+            return new Response(json_encode(array("error"=>true,"message"=>"error User not found")));
+        }
+
+        if ($request->isMethod('GET')) {
+            return $this->render('AdminBundle:Modals:addUserFundsModal.html.twig', array(
+                'user' => $user
+            ));
+        } else if ($request->isMethod('POST') && isset($_POST['amount'])) {
+            $this->get('app_services.users')->makeTransaction($user, $_POST['amount'], "Admin Add Funds");
+            return new Response(json_encode(array("success"=>true)));
         }
     }
 }
