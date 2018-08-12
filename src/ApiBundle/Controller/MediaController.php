@@ -25,6 +25,8 @@ class MediaController extends Controller
      *
      */
     public function getMediaGroupsListAction(Request $request) {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         $em = $this
             ->getDoctrine()
             ->getManager();
@@ -49,7 +51,8 @@ class MediaController extends Controller
             $groupMedias = [];
 
             foreach ($groupMediasRefs as $groupMediasRef) {
-                array_push($groupMedias, $groupMediasRef->getMedia());
+                if ($this->get('app_services.roles')->isGranted($groupMediasRef->getMedia()->getMinimumRole(), $user))
+                    array_push($groupMedias, $groupMediasRef->getMedia());
             }
 
             $mediaGroup->setMedias($groupMedias);

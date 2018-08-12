@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityRepository;
 
@@ -29,6 +30,13 @@ class MediaForm extends AbstractType
                 },
                 'choice_label' => 'name',
                 'placeholder' => 'Choisissez un Media Type',
+            ))
+            ->add('minimumRole', ChoiceType::class, array(
+                'choices' => array(
+                    'ROLE_USER' => 'ROLE_USER',
+                    'ROLE_PAID' => 'ROLE_PAID',
+                    'ROLE_PREMIUM' => 'ROLE_PREMIUM'
+                )
             ))
             ->add('save', SubmitType::class, array('label' => 'Submit'))
         ;

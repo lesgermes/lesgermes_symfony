@@ -4,6 +4,7 @@
         <th>Name</th>
         <th>Url</th>
         <th>Type</th>
+        <th>Minimum Role</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -12,10 +13,12 @@
         <tr data-mediaId="{{ media.id }}">
             <!-- Name -->
             <td>{{ media.name }}</td>
-            <!-- Bank -->
+            <!-- Url -->
             <td>{{ media.url }}</td>
-            <!-- Phone -->
+            <!-- Type -->
             <td>{{ media.type.name }}</td>
+            <!-- Minimum Role -->
+            <td>{{ media.minimumRole }}</td>
             <!-- Actions -->
             <td class="actionButtons">
                 <a href="#" role="button" onclick="openEditMediaModal(event, {{ media.id }})"><i class="fa fa-wrench"></i></a>

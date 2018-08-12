@@ -103,6 +103,29 @@ class Media
     {
         $this->url = $url;
     }
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="minimum_role", type="string", length=255, nullable=false)
+     */
+    private $minimumRole;
+
+    /**
+     * @return string
+     */
+    public function getMinimumRole()
+    {
+        return $this->minimumRole;
+    }
+
+    /**
+     * @param string $minimumRole
+     */
+    public function setMinimumRole($minimumRole)
+    {
+        $this->minimumRole = $minimumRole;
+    }
     
 }
 
