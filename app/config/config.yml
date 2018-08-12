@@ -109,7 +109,7 @@ gesdinet_jwt_refresh_token:
     # user_identity_field: username
     # ttl_update: false
     # firewall: api
-    user_provider: user_provider_service_id
+    user_provider: fos_user.user_provider.username_email
 
 nelmio_cors:
     paths:
