@@ -126,6 +126,18 @@ class Media
     {
         $this->minimumRole = $minimumRole;
     }
+
+    private $userCanRead;
+
+    public function getUserCanRead() 
+    {
+        return $this->userCanRead;
+    }
+
+    public function setUserCanRead($userCanRead)
+    {
+        $this->userCanRead = $userCanRead;
+    }
     
 }
 

@@ -50,9 +50,17 @@ class MediaController extends Controller
             
             $groupMedias = [];
 
+            // foreach ($groupMediasRefs as $groupMediasRef) {
+            //     if ($this->get('app_services.roles')->isGranted($groupMediasRef->getMedia()->getMinimumRole(), $user))
+            //         array_push($groupMedias, $groupMediasRef->getMedia());
+            // }
+
             foreach ($groupMediasRefs as $groupMediasRef) {
-                if ($this->get('app_services.roles')->isGranted($groupMediasRef->getMedia()->getMinimumRole(), $user))
-                    array_push($groupMedias, $groupMediasRef->getMedia());
+                $groupMediasRef->getMedia()->setUserCanRead(
+                    $this->get('app_services.roles')->isGranted($groupMediasRef->getMedia()->getMinimumRole(), $user)
+                );
+
+                array_push($groupMedias, $groupMediasRef->getMedia());
             }
 
             $mediaGroup->setMedias($groupMedias);
