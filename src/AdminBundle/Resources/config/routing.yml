@@ -73,3 +73,15 @@ admin_editMediaGroupsMediasModal:
 admin_doEditMediaGroupsMediasModal:
     path:     /doEditMediaGroupsMediasModal/{groupId}/{action}/{id}
     defaults: { _controller: AdminBundle:Media:doEditGroupMediasModal, groupId: null, action: null, id: null }
+
+admin_promoCodes:
+    path:     /promocodes
+    defaults: { _controller: AdminBundle:Default:promoCodes }
+
+admin_getPromoCodesTable:
+    path:     /promocodesTable
+    defaults: { _controller: AdminBundle:Default:promoCodesTable }
+
+admin_editPromoCodeModal:
+    path:     /editPromoCodeModal/{promoCodeId}
+    defaults: { _controller: AdminBundle:Default:editPromoCodeModal, promoCodeId: null }

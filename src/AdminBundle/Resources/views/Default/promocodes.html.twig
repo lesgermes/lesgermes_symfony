@@ -1,6 +1,6 @@
 {% extends "AdminBundle:Layouts:master.html.twig" %}
 
-{% set title = 'Medias' %}
+{% set title = 'Promo Codes' %}
 
 {% block head %}
     <!-- iCheck -->
@@ -10,12 +10,12 @@
 {% endblock %}
 
 {% block panel_toolbox %}
-    <li><a id="add_media"><i class="fa fa-plus"></i></a>
+    <li><a id="add_promocode"><i class="fa fa-plus"></i></a>
 {% endblock %}
 
 {% block body %}
-    <div id="mediasTableContainer">
-        {{ include('AdminBundle:Default:mediasTable.html.twig', { 'medias': medias }) }}
+    <div id="promocodesTableContainer">
+        {{ include('AdminBundle:Default:promocodesTable.html.twig', { 'promoCodes': promoCodes }) }}
     </div>
 {% endblock %}
 
@@ -32,25 +32,25 @@
     <script>
         $("#datatable").DataTable();
 
-        $(document).on("submit", "#media-form", function(e){
+        $(document).on("submit", "#promocode-form", function(e){
             e.preventDefault();
             return  false;
         });
 
-        function openEditMediaModal(event, mediaId) {
+        function openEditPromoCodeModal(event, promoCodeId) {
             event.preventDefault();
-            $.get("{{ path('admin_editMediaModal') }}/"+mediaId, createEditMediaModal)
+            $.get("{{ path('admin_editPromoCodeModal') }}/"+promoCodeId, createEditPromoCodeModal)
         }
 
-        $('#add_media').click(function(e) {
-            $.get("{{ path('admin_editMediaModal', { mediaId : 'new' }) }}", createEditMediaModal)
+        $('#add_promocode').click(function(e) {
+            $.get("{{ path('admin_editPromoCodeModal', { promoCodeId : 'new' }) }}", createEditPromoCodeModal)
         });
 
-        $(document).on("click", "#media_form_save", function(e){
+        $(document).on("click", "#promo_code_form_save", function(e){
             e.preventDefault();
 
             // get the properties and values from the form
-            form = $("#media-form");
+            form = $("#promocode-form");
 
             if(!form.data('bs.validator').validate().hasErrors()) {
                 data = new FormData(form[0])
@@ -67,9 +67,9 @@
                     success : function(data) {
                         data = JSON.parse(data);
                         if (data.success) {
-                            showSuccess("Media enregistré");
+                            showSuccess("Promo Code enregistré");
                             updateTable();
-                            $("#editMediaModal").modal('hide');
+                            $("#editPromoCodeModal").modal('hide');
                         }
                         else if (data.error) {
                             showError(data.message);
@@ -83,7 +83,7 @@
             }
         });
 
-        function createEditMediaModal(data) {
+        function createEditPromoCodeModal(data) {
             try
             {
                 var dataJson = JSON.parse(data);
@@ -93,16 +93,16 @@
             catch(e)
             {
                 $('#modals').html(data);
-                $("#editMediaModal").modal({
+                $("#editPromoCodeModal").modal({
                     backdrop: 'static',
                     keyboard: false
                 });
-                $("#media-form").validator();
+                $("#promocode-form").validator();
             }
         }
 
         function updateTable() {
-            $.get("{{ path('admin_getMediasTable') }}", function(data) {
+            $.get("{{ path('admin_getPromoCodesTable') }}", function(data) {
                 try
                 {
                     var dataJson = JSON.parse(data);
@@ -111,7 +111,7 @@
                 }
                 catch(e)
                 {
-                    $('#mediasTableContainer').html(data);
+                    $('#promocodesTableContainer').html(data);
                     $("#datatable").DataTable();
                 }
             })

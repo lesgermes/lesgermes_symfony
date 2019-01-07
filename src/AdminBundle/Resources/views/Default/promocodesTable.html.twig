@@ -1,0 +1,39 @@
+<table id="datatable" class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Code</th>
+        <th>Title</th>
+        <th>Role</th>
+        <th>Coins</th>
+        <th>Used On</th>
+        <th>User</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for promoCode in promoCodes %}
+        <tr data-promocodeId="{{ promoCode.id }}">
+            <!-- Code -->
+            <td>{{ promoCode.code }}</td>
+            <!-- Title -->
+            <td>{{ promoCode.title }}</td>
+            <!-- Role -->
+            <td>{{ promoCode.role }}</td>
+            <!-- Coins -->
+            <td>{{ promoCode.coins }}</td>
+            <!-- Used On -->
+            <td>{{ promoCode.usedOn }}</td>
+            <!-- Used On -->
+            <td>
+            {% if promoCode.user %}
+            {{ promoCode.user.username }}
+            {% endif %}
+            </td>
+            <!-- Actions -->
+            <td class="actionButtons">
+                <a href="#" role="button" onclick="openEditPromoCodeModal(event, {{ promoCode.id }})"><i class="fa fa-wrench"></i></a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

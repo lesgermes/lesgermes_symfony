@@ -5,6 +5,8 @@ namespace AdminBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Entity\PromoCode;
+use AppBundle\Form\PromoCodeForm;
 
 class DefaultController extends Controller
 {
@@ -171,5 +173,90 @@ class DefaultController extends Controller
             $this->get('app_services.users')->makeTransaction($user, $_POST['amount'], "Admin Add Funds");
             return new Response(json_encode(array("success"=>true)));
         }
+    }
+
+    public function promoCodesAction(Request $request) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        $promoCodes = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:PromoCode')
+            ->findBy(
+                array(),    //where
+                array('id' => 'ASC')//order
+            );
+
+        return $this->render('AdminBundle:Default:promocodes.html.twig', array(
+            'session' => $session->all(),
+            'promoCodes' => $promoCodes
+        ));
+    }
+
+    public function promoCodesTableAction(Request $request) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        $promoCodes = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:PromoCode')
+            ->findBy(
+                array(),    //where
+                array('id' => 'ASC')//order
+            );
+
+        return $this->render('AdminBundle:Default:promocodesTable.html.twig', array(
+            'promoCodes' => $promoCodes
+        ));
+    }
+
+    public function editPromoCodeModalAction(Request $request, $promoCodeId) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        if (!isset($promoCodeId)) {
+            return new Response(json_encode(array("error"=>true,"message"=>"error promoCodeId")));
+        }
+
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        $promoCode = new PromoCode();
+
+        if ($promoCodeId != 'new')
+            $promoCode = $em
+                ->getRepository('AppBundle:PromoCode')
+                ->find($promoCodeId);
+
+        if (!$promoCode)
+            return new Response(json_encode(array("error"=>true,"message"=>"error Promo Code not found")));
+
+        $form = $this->createForm(PromoCodeForm::class, $promoCode);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid())
+            return $this->render('AdminBundle:Modals:edit_promocode.html.twig', array(
+                'form' => $form->createView(),
+                'promoCodeId' => $promoCodeId
+            ));
+
+        $promoCode = $form->getData();
+
+        $em->persist($promoCode);
+        $em->flush();
+
+        return new Response(json_encode(array("success"=>true,"message"=>"Promo Code updated")));
     }
 }
