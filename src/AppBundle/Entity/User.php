@@ -101,5 +101,28 @@ class User extends BaseUser
     {
         $this->coins = $coins;
     }
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", nullable=true)
+     */
+    protected $title;
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
 }
 

@@ -22,7 +22,7 @@
             <!-- Coins -->
             <td>{{ promoCode.coins }}</td>
             <!-- Used On -->
-            <td>{{ promoCode.usedOn }}</td>
+            <td>{{ promoCode.usedOn|date('Y-m-d H:i:s') }}</td>
             <!-- Used On -->
             <td>
             {% if promoCode.user %}
