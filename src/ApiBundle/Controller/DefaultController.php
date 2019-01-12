@@ -94,6 +94,7 @@ class DefaultController extends Controller
         $user->setLastName($c['last_name']);
         $user->setEnabled(true);
         $user->setCoins(0);
+        $user->setAvailableTitles(array());
         //replace last line with next two commented lines for user confirmation using emails
         // $user->setEnabled(false);
         // $user->setConfirmationToken($this->get('fos_user.util.token_generator')->generateToken());

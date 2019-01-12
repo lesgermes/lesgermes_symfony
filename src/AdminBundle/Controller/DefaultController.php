@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\PromoCode;
 use AppBundle\Form\PromoCodeForm;
+use AppBundle\Entity\UserTitle;
+use AppBundle\Form\UserTitleForm;
 
 class DefaultController extends Controller
 {
@@ -173,6 +175,91 @@ class DefaultController extends Controller
             $this->get('app_services.users')->makeTransaction($user, $_POST['amount'], "Admin Add Funds");
             return new Response(json_encode(array("success"=>true)));
         }
+    }
+
+    public function userTitlesAction(Request $request) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        $titles = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:UserTitle')
+            ->findBy(
+                array(),    //where
+                array('id' => 'ASC')//order
+            );
+
+        return $this->render('AdminBundle:Default:userTitles.html.twig', array(
+            'session' => $session->all(),
+            'titles' => $titles
+        ));
+    }
+
+    public function userTitlesTableAction(Request $request) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        $titles = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:UserTitle')
+            ->findBy(
+                array(),    //where
+                array('id' => 'ASC')//order
+            );
+
+        return $this->render('AdminBundle:Default:userTitlesTable.html.twig', array(
+            'titles' => $titles
+        ));
+    }
+
+    public function editUserTitleModalAction(Request $request, $userTitleId) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        if (!isset($userTitleId)) {
+            return new Response(json_encode(array("error"=>true,"message"=>"error userTitleId")));
+        }
+
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        $userTitle = new UserTitle();
+
+        if ($userTitleId != 'new')
+            $userTitle = $em
+                ->getRepository('AppBundle:UserTitle')
+                ->find($userTitleId);
+
+        if (!$userTitle)
+            return new Response(json_encode(array("error"=>true,"message"=>"error User Title not found")));
+
+        $form = $this->createForm(UserTitleForm::class, $userTitle);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid())
+            return $this->render('AdminBundle:Modals:edit_userTitle.html.twig', array(
+                'form' => $form->createView(),
+                'userTitleId' => $userTitleId
+            ));
+
+        $userTitle = $form->getData();
+
+        $em->persist($userTitle);
+        $em->flush();
+
+        return new Response(json_encode(array("success"=>true,"message"=>"User Title updated")));
     }
 
     public function promoCodesAction(Request $request) {

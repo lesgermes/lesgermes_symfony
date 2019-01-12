@@ -1,0 +1,113 @@
+{% extends "AdminBundle:Layouts:master.html.twig" %}
+
+{% set title = 'User Titles' %}
+
+{% block head %}
+    <!-- iCheck -->
+    <link href="{{ asset('node_modules/icheck/skins/flat/green.css') }}" rel="stylesheet">
+    {% include 'AdminBundle:Plugins:data_tables.css.html.twig' %}
+
+{% endblock %}
+
+{% block panel_toolbox %}
+<li><a id="add_userTitle"><i class="fa fa-plus"></i></a>
+{% endblock %}
+
+{% block body %}
+    <div id="userTitlesTableContainer">
+        {{ include('AdminBundle:Default:userTitlesTable.html.twig', { 'titles': titles }) }}
+    </div>
+{% endblock %}
+
+{% block modals %}
+    <div id="modals"></div>
+{% endblock %}
+
+{% block scripts %}
+    <!-- iCheck -->
+    <script src="{{ asset('node_modules/icheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('node_modules/bootstrap-validator/dist/validator.min.js') }}"></script>
+    {% include 'AdminBundle:Plugins:data_tables.js.html.twig' %}
+
+    <script>
+        $("#datatable").DataTable();
+
+        function openEditUserTitleModal(event, userTitleId) {
+            event.preventDefault();
+            $.get("{{ path('admin_editUserTitleModal') }}/"+userTitleId, createEditUserTitleModal)
+        }
+
+        $('#add_userTitle').click(function(e) {
+            $.get("{{ path('admin_editUserTitleModal', { userTitleId : 'new' }) }}", createEditUserTitleModal)
+        });
+
+        $(document).on("submit", "#userTitle-form", function(e){
+            e.preventDefault();
+
+            // get the properties and values from the form
+            form = $("#userTitle-form");
+            if(!form.data('bs.validator').validate().hasErrors()) {
+                formData = new FormData(form[0]);
+
+                disableModalInputs(true);
+                $.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: formData,
+                    contentType: false, //this is requireded please see answers above
+                    processData: false, //this is requireded please see answers above
+                    error   : function(data) {showError("Une erreur est survenue, veuillez réessayer.");disableModalInputs(false);},
+                    success : function(data) {
+                        data = JSON.parse(data);
+                        if (data.success) {
+                            showSuccess("User Title enregistré");
+                            updateTable();
+                            $("#editUserTitleModal").modal('hide');
+                        }
+                        else if (data.error) {
+                            showError(data.message);
+                        }
+                        else {
+                            showError("Une erreur est survenue, veuillez réessayer.");
+                        }
+                        disableModalInputs(false);
+                    }
+                });
+            }
+        });
+
+        function createEditUserTitleModal(data) {
+            try
+            {
+                var dataJson = JSON.parse(data);
+                if (dataJson.error)
+                    showError(dataJson.message);
+            }
+            catch(e)
+            {
+                $('#modals').html(data);
+                $("#editUserTitleModal").modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                $("#userTitle-form").validator();
+            }
+        }
+
+        function updateTable() {
+            $.get("{{ path('admin_userTitlesTable') }}", function(data) {
+                try
+                {
+                    var dataJson = JSON.parse(data);
+                    if (dataJson.error)
+                        showError(dataJson.message);
+                }
+                catch(e)
+                {
+                    $('#userTitlesTableContainer').html(data);
+                    $("#datatable").DataTable();
+                }
+            })
+        }
+    </script>
+{% endblock %}

@@ -30,6 +30,30 @@ admin_addUserFundsModal:
     path:     /addUserFundsModal/{userId}
     defaults: { _controller: AdminBundle:Default:addUserFundsModal, userId: null }
 
+admin_userTitles:
+    path:     /userTitles
+    defaults: { _controller: AdminBundle:Default:userTitles }
+
+admin_userTitlesTable:
+    path:     /userTitlesTable
+    defaults: { _controller: AdminBundle:Default:userTitlesTable }
+
+admin_editUserTitleModal:
+    path:     /editUserTitleModal/{userTitleId}
+    defaults: { _controller: AdminBundle:Default:editUserTitleModal, userTitleId: null }
+
+admin_promoCodes:
+    path:     /promocodes
+    defaults: { _controller: AdminBundle:Default:promoCodes }
+
+admin_getPromoCodesTable:
+    path:     /promocodesTable
+    defaults: { _controller: AdminBundle:Default:promoCodesTable }
+
+admin_editPromoCodeModal:
+    path:     /editPromoCodeModal/{promoCodeId}
+    defaults: { _controller: AdminBundle:Default:editPromoCodeModal, promoCodeId: null }
+
 admin_mediaTypes:
     path:     /mediaTypes
     defaults: { _controller: AdminBundle:Media:getMediaTypesList }
@@ -77,15 +101,3 @@ admin_editMediaGroupsMediasModal:
 admin_doEditMediaGroupsMediasModal:
     path:     /doEditMediaGroupsMediasModal/{groupId}/{action}/{id}
     defaults: { _controller: AdminBundle:Media:doEditGroupMediasModal, groupId: null, action: null, id: null }
-
-admin_promoCodes:
-    path:     /promocodes
-    defaults: { _controller: AdminBundle:Default:promoCodes }
-
-admin_getPromoCodesTable:
-    path:     /promocodesTable
-    defaults: { _controller: AdminBundle:Default:promoCodesTable }
-
-admin_editPromoCodeModal:
-    path:     /editPromoCodeModal/{promoCodeId}
-    defaults: { _controller: AdminBundle:Default:editPromoCodeModal, promoCodeId: null }

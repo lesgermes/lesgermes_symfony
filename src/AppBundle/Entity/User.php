@@ -103,14 +103,17 @@ class User extends BaseUser
     }
 
     /**
-     * @var string
+     * @var AppBundle\Entity\UserTitle
      *
-     * @ORM\Column(name="title", type="string", nullable=true)
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserTitle")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="title", referencedColumnName="id", nullable=true)
+     * })
      */
-    protected $title;
+    private $title;
 
     /**
-     * @return string
+     * @return UserTitle
      */
     public function getTitle()
     {
@@ -118,11 +121,34 @@ class User extends BaseUser
     }
 
     /**
-     * @param string $title
+     * @param UserTitle $title
      */
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="available_titles", type="array", nullable=false)
+     */
+    private $availableTitles;
+
+    /**
+     * @return array
+     */
+    public function getAvailableTitles()
+    {
+        return $this->availableTitles;
+    }
+
+    /**
+     * @param array $availableTitles
+     */
+    public function setAvailableTitles($availableTitles)
+    {
+        $this->availableTitles = $availableTitles;
     }
 }
 

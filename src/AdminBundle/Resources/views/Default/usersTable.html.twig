@@ -19,7 +19,11 @@
             <!-- Username -->
             <td>{{ user.username }}</td>
             <!-- Title -->
-            <td>{{ user.title }}</td>
+            {% if user.title %}
+            <td>{{ user.title.name }}</td>
+            {% else %}
+            <td></td>
+            {% endif %}
             <!-- Email -->
             <td>{{ user.email }}</td>
             <!-- Enabled -->

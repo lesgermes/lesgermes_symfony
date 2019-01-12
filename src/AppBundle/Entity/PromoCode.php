@@ -56,14 +56,17 @@ class PromoCode
     }
 
     /**
-     * @var string
+     * @var AppBundle\Entity\UserTitle
      *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserTitle")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="title", referencedColumnName="id", nullable=false)
+     * })
      */
     private $title;
 
     /**
-     * @return string
+     * @return UserTitle
      */
     public function getTitle()
     {
@@ -71,7 +74,7 @@ class PromoCode
     }
 
     /**
-     * @param string $title
+     * @param UserTitle $title
      */
     public function setTitle($title)
     {

@@ -99,6 +99,9 @@ class UserController extends Controller
                 ->setData("promo code has already been used");
         
         $user->setTitle($promoCode->getTitle());
+        $userAvailableTitles = $user->getAvailableTitles();
+        array_push($userAvailableTitles, $promoCode->getTitle()->getId());
+        $user->setAvailableTitles($userAvailableTitles);
         $user->addRole($promoCode->getRole());
         $this
             ->get('fos_user.user_manager')
