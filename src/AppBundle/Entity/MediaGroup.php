@@ -55,6 +55,30 @@ class MediaGroup
         $this->name = $name;
     }
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="position", type="integer", nullable=false)
+     */
+    private $position;
+
+
+    /**
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param string $position
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
     private $medias;
     public function getMedias() {
         return $this->medias;

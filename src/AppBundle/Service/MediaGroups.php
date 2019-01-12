@@ -32,6 +32,19 @@ class MediaGroups
         return $group;
     }
 
+    public function getLastGroupPosition() {
+        $groups = $this->em
+            ->getRepository('AppBundle:MediaGroup')
+            ->findBy(
+                array(),    //where
+                array('position' => 'ASC')//order
+            );
+
+        $lastGroup = $groups[ count($groups) - 1 ];
+
+        return $lastGroup->getPosition();
+    }
+
     public function getGroupMedias($group) {
         $medias = $this->em
             ->getRepository('AppBundle:MediaGroupsMedias')

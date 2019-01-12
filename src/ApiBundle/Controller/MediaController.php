@@ -35,7 +35,7 @@ class MediaController extends Controller
             ->getRepository('AppBundle:MediaGroup')
             ->findBy(
                 array(),    //where
-                array('id' => 'ASC')//order
+                array('position' => 'ASC')//order
             );
 
         foreach ($mediaGroups as $mediaGroup) {

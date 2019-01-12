@@ -191,7 +191,7 @@ class MediaController extends Controller
             ->getRepository('AppBundle:MediaGroup')
             ->findBy(
                 array(),    //where
-                array('id' => 'ASC')//order
+                array('position' => 'ASC')//order
             );
         return $this->render('AdminBundle:Default:mediaGroups.html.twig', array(
             'session' => $session->all(),
@@ -232,6 +232,7 @@ class MediaController extends Controller
             ));
 
         $group = $form->getData();
+        $group->setPosition($this->get('app_services.media_groups')->getLastGroupPosition() + 1);
 
         $em->persist($group);
         $em->flush();
@@ -251,10 +252,46 @@ class MediaController extends Controller
             ->getRepository('AppBundle:MediaGroup')
             ->findBy(
                 array(),    //where
-                array('id' => 'ASC')//order
+                array('position' => 'ASC')//order
             );
 
         return $this->render('AdminBundle:Default:mediaGroupsTable.html.twig', array(
+            'groups' => $groups
+        ));
+    }
+
+    public function reorderMediaGroupsModalsAction(Request $request) {
+        $session = $request->getSession();
+
+        if (!$session->has('login'))
+            return new Response(json_encode(array("error"=>true,"message"=>"Session expired")));
+
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        if ($request->isMethod('POST')) {
+            $data = json_decode(urldecode($request->getContent()));
+            foreach ($data as $info) {
+                $info = json_decode(json_encode($info),true);
+                $group = $em
+                ->getRepository('AppBundle:MediaGroup')
+                ->find($info["id"]);
+                $group->setPosition($info["position"]);
+                $em->persist($group);
+            }
+            $em->flush();
+            return new Response(json_encode(array("success"=>true,"message"=>"Group Medias order updated")));
+        }
+
+        $groups = $em
+            ->getRepository('AppBundle:MediaGroup')
+            ->findBy(
+                array(),    //where
+                array('position' => 'ASC')//order
+            );
+
+        return $this->render('AdminBundle:Modals:reorder_mediaGroups.html.twig', array(
             'groups' => $groups
         ));
     }

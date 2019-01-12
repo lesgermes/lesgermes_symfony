@@ -9,8 +9,9 @@
 {% endblock %}
 
 {% block panel_toolbox %}
+<li><a id="reorder_mediaGroups"><i class="fa fa-sort"></i></a>
 <li><a id="add_mediaGroup"><i class="fa fa-plus"></i></a>
-    {% endblock %}
+{% endblock %}
 
     {% block body %}
         <div id="mediaGroupsTableContainer">
@@ -27,6 +28,9 @@
     <script src="{{ asset('node_modules/icheck/icheck.min.js') }}"></script>
     <script src="{{ asset('node_modules/bootstrap-validator/dist/validator.min.js') }}"></script>
     {% include 'AdminBundle:Plugins:data_tables.js.html.twig' %}
+    <!-- Jquery Sortable -->
+    {# <script src="{{ asset('node_modules/jquery-sortable/source/js/jquery-sortable.js') }}"></script> #}
+    <script src="{{ asset('admin/js/sortable-list.js') }}"></script>
 
     <script>
         $("#datatable").DataTable();
@@ -43,6 +47,10 @@
 
         $('#add_mediaGroup').click(function(e) {
             $.get("{{ path('admin_editMediaGroupModal', { groupId : 'new' }) }}", createEditMediaGroupModal);
+        });
+
+        $('#reorder_mediaGroups').click(function(e) {
+            $.get("{{ path('admin_reorderMediaGroupsModal') }}", createReorderMediaGroupsModal)
         });
 
         $(document).on("submit", "#mediaGroup-form", function(e){
@@ -147,6 +155,60 @@
                     $("#datatable").DataTable();
                 }
             })
+        }
+
+        function createReorderMediaGroupsModal(data) {
+            try {
+                var dataJson = JSON.parse(data);
+                if (dataJson.error)
+                    showError(dataJson.message)
+            }
+            catch(e) {
+                $('#modals').html(data);
+                $("#reorderMediaGroupsModal").modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                initSortableList();
+
+                $('#submitMediaGroupsOrder').click(submitMediaGroupsOrder);
+            }
+        }
+
+        function submitMediaGroupsOrder() {
+            listElements = $('.list-group-sortable-handles > .list-group-item')
+            postArray = [];
+            for (var i = 0; i < listElements.length; i++) {
+                postArray.push({
+                    id: $(listElements[i]).attr('data-groupId'),
+                    position: i
+                });
+            }
+            console.log(postArray);
+
+            $.ajax({
+                type: "POST",
+                url: "{{ path('admin_reorderMediaGroupsModal') }}",
+                data: JSON.stringify(postArray),
+                contentType: 'application/json',
+                processData: false, //this is requireded please see answers above
+                error   : function(data) {showError("Une erreur est survenue, veuillez réessayer.");disableModalInputs(false);},
+                success : function(data) {
+                    data = JSON.parse(data);
+                    if (data.success) {
+                        showSuccess("Ordre des Media Groups enregistré");
+                        updateTable();
+                        $("#reorderMediaGroupsModal").modal('hide');
+                    }
+                    else if (data.error) {
+                        showError(data.message);
+                    }
+                    else {
+                        showError("Une erreur est survenue, veuillez réessayer.");
+                    }
+                    disableModalInputs(false);
+                }
+            });
         }
     </script>
 {% endblock %}

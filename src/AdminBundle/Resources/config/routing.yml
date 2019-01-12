@@ -66,6 +66,10 @@ admin_editMediaGroupModal:
     path:     /editMediaGroupModal/{groupId}
     defaults: { _controller: AdminBundle:Media:editGroupModal, groupId: null }
 
+admin_reorderMediaGroupsModal:
+    path:     /reorderMediaGroupsModal/
+    defaults: { _controller: AdminBundle:Media:reorderMediaGroupsModals }
+
 admin_editMediaGroupsMediasModal:
     path:     /editMediaGroupsMediasModal/{groupId}
     defaults: { _controller: AdminBundle:Media:editGroupMediasModal, groupId: null }
