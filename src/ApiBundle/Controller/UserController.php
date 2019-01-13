@@ -118,4 +118,107 @@ class UserController extends Controller
             ->setStatusCode(200)
             ->setData($user);
     }
+
+    /**
+     * Get Available Titles
+     *
+     * @Get("/get_available_titles")
+     * @ApiDoc(
+     *  resource=true,
+     *  description=" Get Available Titles",
+     *  statusCodes={
+     *         200="Returned when successful"
+     *  }
+     * )
+     *
+     */
+    public function setTitleAction(Request $request) {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        $availableTitlesIds = $user->getAvailableTitles();
+        $availableTitles = [];
+        foreach ($availableTitlesIds as $availableTitleId) {
+            $availableTitle = $em
+                ->getRepository('AppBundle:UserTitle')
+                ->find($availableTitleId);
+
+            array_push($availableTitles, $availableTitle);
+        }
+
+        return View::create()
+            ->setStatusCode(200)
+            ->setData($availableTitles);
+    }
+
+    /**
+     * Set Title
+     *
+     * @Post("/set_title")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Set Title",
+     *  parameters={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "required"=true,
+     *          "description"="title id"
+     *      },
+     *      {
+     *          "name"="name",
+     *          "dataType"="string",
+     *          "required"=false,
+     *          "description"="title name"
+     *      }
+     *  },
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         400="Returned when form error",
+     *         401="Returned when title doesn't exist",
+     *         402="Returned when user doesn't have access to this title"
+     *  }
+     * )
+     *
+     */
+    public function getAvailableTitlesAction(Request $request) {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $c = $request->request->all();
+
+        if ($request->getMethod() != 'POST' || !array_key_exists("id", $c))
+            return View::create()
+                ->setStatusCode(400)
+                ->setData("form error");
+
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        $title = $em
+            ->getRepository('AppBundle:UserTitle')
+            ->find($c["id"]);
+        
+        if (!$title)
+            return View::create()
+                ->setStatusCode(401)
+                ->setData("title doesn't exist");
+        
+        $userAvailableTitlesIds = $user->getAvailableTitles();
+        if (!in_array($c["id"], $userAvailableTitlesIds))
+            return View::create()
+                ->setStatusCode(402)
+                ->setData("user doesn't have access to this title");
+
+        $user->setTitle($title);
+        $this
+            ->get('fos_user.user_manager')
+            ->updateUser($user);
+
+        return View::create()
+            ->setStatusCode(200)
+            ->setData($user);
+    }
 }
