@@ -34,6 +34,52 @@ class UserController extends Controller
     }
 
     /**
+     * Set username
+     *
+     * @Post("/set_username")
+     * @ApiDoc(
+     *  resource=true,
+     *  description=" Set username",
+     *  parameters={
+     *      {
+     *          "name"="username",
+     *          "dataType"="string",
+     *          "required"=true,
+     *          "description"="username"
+     *      }
+     *  },
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         400="Returned when form error",
+     *         401="Returned when username is not available"
+     *  }
+     * )
+     *
+     */
+    public function setUsernameAction(Request $request) {
+        $userManager = $this->get('fos_user.user_manager');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $c = $request->request->all();
+
+        if ($request->getMethod() != 'POST' || !array_key_exists("username", $c))
+            return View::create()
+                ->setStatusCode(400)
+                ->setData("form error");
+
+        if ($userManager->findUserByUsername($c['username']))
+            return View::create()
+                ->setStatusCode(401)
+                ->setData("username is not available");
+
+        $user->setUsername($c['username']);
+        $userManager->updateUser($user);
+
+        return View::create()
+            ->setStatusCode(200)
+            ->setData($user);
+    }
+
+    /**
      * Register Promo Code
      *
      * @Post("/register_promo_code")
