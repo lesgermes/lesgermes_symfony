@@ -150,5 +150,31 @@ class User extends BaseUser
     {
         $this->availableTitles = $availableTitles;
     }
+
+    /**
+     * @var AppBundle\Entity\ProfileImage
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ProfileImage")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="profile_image", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $profileImage;
+
+    /**
+     * @return ProfileImage
+     */
+    public function getProfileImage()
+    {
+        return $this->profileImage;
+    }
+
+    /**
+     * @param ProfileImage $profileImage
+     */
+    public function setProfileImage($profileImage)
+    {
+        $this->profileImage = $profileImage;
+    }
 }
 

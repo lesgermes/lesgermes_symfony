@@ -178,7 +178,7 @@ class UserController extends Controller
      * )
      *
      */
-    public function setTitleAction(Request $request) {
+    public function getAvailableTitlesAction(Request $request) {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this
@@ -230,7 +230,7 @@ class UserController extends Controller
      * )
      *
      */
-    public function getAvailableTitlesAction(Request $request) {
+    public function setTitleAction(Request $request) {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $c = $request->request->all();
 
@@ -259,6 +259,112 @@ class UserController extends Controller
                 ->setData("user doesn't have access to this title");
 
         $user->setTitle($title);
+        $this
+            ->get('fos_user.user_manager')
+            ->updateUser($user);
+
+        return View::create()
+            ->setStatusCode(200)
+            ->setData($user);
+    }
+
+    /**
+     * Get Profile Images
+     *
+     * @Get("/get_profile_images")
+     * @ApiDoc(
+     *  resource=true,
+     *  description=" Get Profile Images",
+     *  statusCodes={
+     *         200="Returned when successful"
+     *  }
+     * )
+     *
+     */
+    public function getProfileImagesAction(Request $request) {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        $profileImagesRefs = $em
+            ->getRepository('AppBundle:ProfileImage')
+            ->findBy(
+                array(), //where
+                array('id' => 'ASC')//order
+            );
+        
+        $profileImages = [];
+
+        foreach ($profileImagesRefs as $profileImagesRef) {
+            if ($this->get('app_services.roles')->isGranted($profileImagesRef->getMinimumRole(), $user)) {
+                $image = $profileImagesRef;
+                $image->setImage(
+                    $this->get('app_services.users')->getProfileImageUrl($image)
+                );
+
+                array_push($profileImages, $image);
+            }
+        }
+
+        return View::create()
+            ->setStatusCode(200)
+            ->setData($profileImages);
+    }
+
+    /**
+     * Set Profile Image
+     *
+     * @Post("/set_profile_image")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Set Profile Image",
+     *  parameters={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "required"=true,
+     *          "description"="profile image id"
+     *      }
+     *  },
+     *  statusCodes={
+     *         200="Returned when successful",
+     *         400="Returned when form error",
+     *         401="Returned when profile image doesn't exist",
+     *         402="Returned when user doesn't have access to this profile image"
+     *  }
+     * )
+     *
+     */
+    public function setProfileImageAction(Request $request) {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $c = $request->request->all();
+
+        if ($request->getMethod() != 'POST' || !array_key_exists("id", $c))
+            return View::create()
+                ->setStatusCode(400)
+                ->setData("form error");
+
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        $profileImage = $em
+            ->getRepository('AppBundle:ProfileImage')
+            ->find($c["id"]);
+        
+        if (!$profileImage)
+            return View::create()
+                ->setStatusCode(401)
+                ->setData("profile image doesn't exist");
+        
+        if (!$this->get('app_services.roles')->isGranted($profileImage->getMinimumRole(), $user))
+            return View::create()
+                ->setStatusCode(402)
+                ->setData("user doesn't have access to this profile image");
+
+        $user->setProfileImage($profileImage);
         $this
             ->get('fos_user.user_manager')
             ->updateUser($user);
