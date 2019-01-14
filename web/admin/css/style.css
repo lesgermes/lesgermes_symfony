@@ -38,3 +38,7 @@ img.accout_type_logo {
     border-radius: 6px;
     padding: 10px;
 }
+
+.profileImage {
+    max-height: 60px;
+}

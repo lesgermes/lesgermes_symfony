@@ -1,0 +1,23 @@
+<table id="datatable" class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Image</th>
+        <th>Minimum Role</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for profileImage in profileImages %}
+        <tr data-profileImageId="{{ profileImage.id }}">
+            <!-- Image -->
+            <td><img src="{{ asset('profile_images/' ~ profileImage.image) }}" class="profileImage"></td>
+            <!-- Minimum Role -->
+            <td>{{ profileImage.minimumRole }}</td>
+            <!-- Actions -->
+            <td class="actionButtons">
+                <a href="#" role="button" onclick="openEditProfileImageModal(event, {{ profileImage.id }})"><i class="fa fa-wrench"></i></a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

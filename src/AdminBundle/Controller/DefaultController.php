@@ -5,10 +5,13 @@ namespace AdminBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Filesystem\Filesystem;
 use AppBundle\Entity\PromoCode;
 use AppBundle\Form\PromoCodeForm;
 use AppBundle\Entity\UserTitle;
 use AppBundle\Form\UserTitleForm;
+use AppBundle\Entity\ProfileImage;
+use AppBundle\Form\ProfileImageForm;
 
 class DefaultController extends Controller
 {
@@ -345,5 +348,109 @@ class DefaultController extends Controller
         $em->flush();
 
         return new Response(json_encode(array("success"=>true,"message"=>"Promo Code updated")));
+    }
+
+    public function profileImagesAction(Request $request) {
+        $session = $request->getSession();
+
+        if (!$session->has('login'))
+            return $this->redirect($this->generateUrl('admin_login'));
+
+        $profileImages = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:ProfileImage')
+            ->findBy(
+                array(),    //where
+                array('id' => 'ASC')//order
+            );
+
+            return $this->render('AdminBundle:Default:profileimages.html.twig', array(
+                'session' => $session->all(),
+                'profileImages' => $profileImages
+            ));
+    }
+
+    public function profileImagesTableAction(Request $request) {
+        $session = $request->getSession();
+
+        if (!$session->has('login'))
+            return $this->redirect($this->generateUrl('admin_login'));
+
+        $profileImages = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:ProfileImage')
+            ->findBy(
+                array(),    //where
+                array('id' => 'ASC')//order
+            );
+
+        return $this->render('AdminBundle:Default:profileimagesTable.html.twig', array(
+            'profileImages' => $profileImages
+        ));
+    }
+
+    public function editProfileImageModalAction(Request $request, $profileImageId) {
+        $session = $request->getSession();
+
+        if (!$session->has('login')) {
+            return $this->redirect($this->generateUrl('admin_login'));
+        }
+
+        if (!isset($profileImageId)) {
+            return new Response(json_encode(array("error"=>true,"message"=>"error profileImageId")));
+        }
+
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        $profileImage = new ProfileImage();
+
+        if ($profileImageId != 'new')
+            $profileImage = $em
+                ->getRepository('AppBundle:ProfileImage')
+                ->find($profileImageId);
+
+        if (!$profileImage)
+            return new Response(json_encode(array("error"=>true,"message"=>"error Profile Image not found")));
+
+        $image = $profileImage->getImage();
+
+        $form = $this->createForm(ProfileImageForm::class, $profileImage);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid())
+            return $this->render('AdminBundle:Modals:edit_profileimage.html.twig', array(
+                'form' => $form->createView(),
+                'profileImageId' => $profileImageId
+            ));
+
+        $profileImage = $form->getData();
+        if (!is_null($profileImage->getImage())) {
+            $filename = $this->saveProfileImage($profileImage);
+            $profileImage->setImage($filename);
+        }
+        else {
+            $profileImage->setImage($image);
+        }
+
+        $em->persist($profileImage);
+        $em->flush();
+
+        return new Response(json_encode(array("success"=>true,"message"=>"Profile image updated")));
+    }
+
+    private function saveProfileImage($profileImage) {
+        $fs = new Filesystem();
+        $fs->mkdir($this->getParameter('profile_image_directory'));
+        $file = $profileImage->getImage();
+        $filename = md5(uniqid()).'.png';
+        $file->move(
+            $this->getParameter('profile_image_directory'),
+            $filename
+        );
+        return $filename;
     }
 }

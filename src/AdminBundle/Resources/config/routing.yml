@@ -54,6 +54,18 @@ admin_editPromoCodeModal:
     path:     /editPromoCodeModal/{promoCodeId}
     defaults: { _controller: AdminBundle:Default:editPromoCodeModal, promoCodeId: null }
 
+admin_profileImages:
+    path:     /profileImages
+    defaults: { _controller: AdminBundle:Default:profileImages }
+
+admin_profileImagesTable:
+    path:     /profileImagesTable
+    defaults: { _controller: AdminBundle:Default:profileImagesTable }
+
+admin_editProfileImageModal:
+    path:     /editProfileImageModal/{profileImageId}
+    defaults: { _controller: AdminBundle:Default:editProfileImageModal, profileImageId: null }
+
 admin_mediaTypes:
     path:     /mediaTypes
     defaults: { _controller: AdminBundle:Media:getMediaTypesList }

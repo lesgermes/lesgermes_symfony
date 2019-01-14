@@ -1,0 +1,120 @@
+{% extends "AdminBundle:Layouts:master.html.twig" %}
+
+{% set title = 'Profile Images' %}
+
+{% block head %}
+    <!-- iCheck -->
+    <link href="{{ asset('node_modules/icheck/skins/flat/green.css') }}" rel="stylesheet">
+    {% include 'AdminBundle:Plugins:data_tables.css.html.twig' %}
+
+{% endblock %}
+
+{% block panel_toolbox %}
+    <li><a id="add_profileImage"><i class="fa fa-plus"></i></a>
+{% endblock %}
+
+{% block body %}
+    <div id="profileImagesTableContainer">
+        {{ include('AdminBundle:Default:profileimagesTable.html.twig', { 'profileImages': profileImages }) }}
+    </div>
+{% endblock %}
+
+{% block modals %}
+    <div id="modals"></div>
+{% endblock %}
+
+{% block scripts %}
+    <!-- iCheck -->
+    <script src="{{ asset('node_modules/icheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('node_modules/bootstrap-validator/dist/validator.min.js') }}"></script>
+    {% include 'AdminBundle:Plugins:data_tables.js.html.twig' %}
+
+    <script>
+        $("#datatable").DataTable();
+
+        $(document).on("submit", "#profileImage-form", function(e){
+            e.preventDefault();
+            return  false;
+        });
+
+        function openEditProfileImageModal(event, profileImageId) {
+            event.preventDefault();
+            $.get("{{ path('admin_editProfileImageModal') }}/"+profileImageId, createEditProfileImageModal)
+        }
+
+        $('#add_profileImage').click(function(e) {
+            $.get("{{ path('admin_editProfileImageModal', { profileImageId : 'new' }) }}", createEditProfileImageModal)
+        });
+
+        $(document).on("click", "#profile_image_form_save", function(e){
+            e.preventDefault();
+
+            // get the properties and values from the form
+            form = $("#profileImage-form");
+
+            if(!form.data('bs.validator').validate().hasErrors()) {
+                data = new FormData(form[0])
+
+                disableModalInputs(true);
+
+                $.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: data,
+                    contentType: false, //this is requireded please see answers above
+                    processData: false, //this is requireded please see answers above
+                    error   : function(data) {showError("Une erreur est survenue, veuillez réessayer.");disableModalInputs(false);},
+                    success : function(data) {
+                        data = JSON.parse(data);
+                        if (data.success) {
+                            showSuccess("Profile Image enregistrée");
+                            updateTable();
+                            $("#editProfileImageModal").modal('hide');
+                        }
+                        else if (data.error) {
+                            showError(data.message);
+                        }
+                        else {
+                            showError("Une erreur est survenue, veuillez réessayer.");
+                        }
+                        disableModalInputs(false);
+                    }
+                });
+            }
+        });
+
+        function createEditProfileImageModal(data) {
+            try
+            {
+                var dataJson = JSON.parse(data);
+                if (dataJson.error)
+                    showError(dataJson.message);
+            }
+            catch(e)
+            {
+                $('#modals').html(data);
+                $("#editProfileImageModal").modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                $("#profileImage-form").validator();
+            }
+        }
+
+        function updateTable() {
+            $.get("{{ path('admin_profileImagesTable') }}", function(data) {
+                try
+                {
+                    var dataJson = JSON.parse(data);
+                    if (dataJson.error)
+                        showError(dataJson.message);
+                }
+                catch(e)
+                {
+                    $('#profileImagesTableContainer').html(data);
+                    $("#datatable").DataTable();
+                }
+            })
+        }
+    </script>
+{% endblock %}

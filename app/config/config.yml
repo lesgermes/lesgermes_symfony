@@ -10,6 +10,7 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    profile_image_directory: '%kernel.root_dir%/../web/profile_images'
 
 framework:
     #esi: ~
