@@ -299,12 +299,7 @@ class UserController extends Controller
 
         foreach ($profileImagesRefs as $profileImagesRef) {
             if ($this->get('app_services.roles')->isGranted($profileImagesRef->getMinimumRole(), $user)) {
-                $image = $profileImagesRef;
-                $image->setImage(
-                    $this->get('app_services.users')->getProfileImageUrl($image)
-                );
-
-                array_push($profileImages, $image);
+                array_push($profileImages, $profileImagesRef);
             }
         }
 

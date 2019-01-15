@@ -13,4 +13,10 @@ services:
     
     app_services.users:
         class: AppBundle\Service\Users
-        arguments: ['@doctrine.orm.entity_manager', "@service_container"]
+        arguments: ['@doctrine.orm.entity_manager']
+    
+    profileimageentity.listener:
+        class: AppBundle\EventListener\ProfileImageEntityListener
+        arguments: ['@service_container']
+        tags:
+            - { name: doctrine.event_listener, event: postLoad }

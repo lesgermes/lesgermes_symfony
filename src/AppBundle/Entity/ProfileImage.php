@@ -77,5 +77,13 @@ class ProfileImage
     {
         $this->minimumRole = $minimumRole;
     }
+
+    private $baseUrl;
+    public function getBaseUrl(){
+        return $this->baseUrl;
+    }
+    public function setBaseUrl($baseUrl) {
+        $this->baseUrl = $baseUrl;
+    }
 }
 
